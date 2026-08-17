@@ -9,7 +9,7 @@ st.set_page_config(page_title="Predicción de Vinos")
 st.title("Predicción de Éxito de Vinos Tintos")
 st.write("Esta aplicación predice el nivel de éxito de un vino tinto según sus características químicas.")
 
-# Cargar el dataset
+# Cargar el dataset ---importante
 df = pd.read_csv("vinos_tintos.csv")
 
 # Limpieza básica
@@ -24,7 +24,8 @@ y = df["success"]
 # Dividir los datos
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Entrenar el modelo
+# Entrenar el modelo----Random Forest
+# Se eligio el RF ya que predijo mejor el exito de vinos que la RL, practcamente los resultados fueron mas confiables
 modelo = RandomForestRegressor(n_estimators=100, random_state=42)
 modelo.fit(X_train, y_train)
 
@@ -50,7 +51,7 @@ if st.sidebar.button("Predecir"):
     
     prediccion = modelo.predict(datos)[0]
     
-    # Mensajes según el resultado
+    # Mensajes  de los cuales evaluamos los success, el cual esta en el dataset y sirve para enseñarlo al modelo, en cambio la aplicacion web sirve para predecir el success de vinos nuevos que aun no tienen ninguna puntuacion por ende no estan en elk modelo
     if prediccion >= 65:
         st.success(f"Success predicho: {prediccion:.2f}")
         st.write("Este vino tiene un nivel de éxito **alto**.")
