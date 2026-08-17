@@ -99,20 +99,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =========================
-# GRÁFICO 1
-# =========================
-st.subheader("Importancia de las variables")
-
-importancias = modelo.feature_importances_
-variables = X.columns
-
-fig1, ax1 = plt.subplots()
-ax1.barh(variables, importancias, color="teal")
-ax1.set_xlabel("Importancia")
-ax1.set_title("Influencia de cada variable en el Success")
-st.pyplot(fig1)
-
-# =========================
 # GRÁFICO 2
 # =========================
 st.subheader("Valores reales vs predichos")
