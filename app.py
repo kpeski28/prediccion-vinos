@@ -57,15 +57,20 @@ if st.sidebar.button("Predecir"):
     
     prediccion = modelo.predict(datos)[0]
     
+    st.subheader("Resultado de la predicción")
+    
     if prediccion >= 65:
-        st.success(f"Success predicho: {prediccion:.2f}")
-        st.write("Este vino tiene un nivel de éxito **alto**.")
+        st.success(f"**Success predicho: {prediccion:.2f}**")
+        st.write("Nivel de éxito: **ALTO**")
+        st.write("Este vino tiene buenas características y un alto potencial de éxito.")
     elif prediccion >= 50:
-        st.info(f"Success predicho: {prediccion:.2f}")
-        st.write("Este vino tiene un nivel de éxito **medio**.")
+        st.info(f"**Success predicho: {prediccion:.2f}**")
+        st.write("Nivel de éxito: **MEDIO**")
+        st.write("Este vino tiene un nivel de éxito intermedio.")
     else:
-        st.error(f"Success predicho: {prediccion:.2f}")
-        st.write("Este vino tiene un nivel de éxito **bajo**.")
+        st.error(f"**Success predicho: {prediccion:.2f}**")
+        st.write("Nivel de éxito: **BAJO**")
+        st.write("Este vino presenta un nivel de éxito bajo según sus características químicas.")
 
 # =========================
 # RESULTADOS DEL MODELO
@@ -83,6 +88,16 @@ st.write(f"**MAE:** {mae:.2f}")
 st.write(f"**RMSE:** {rmse:.2f}")
 
 st.caption("Estas métricas muestran el rendimiento del modelo al predecir el success de los vinos.")
+
+# =========================
+# Clasificación de Success
+# =========================
+st.subheader("Clasificación del Success")
+st.write("""
+- **ALTO:** 65 o más  
+- **MEDIO:** entre 50 y 64  
+- **BAJO:** menos de 50  
+""")
 
 # =========================
 # GRÁFICO 1: Importancia de variables
