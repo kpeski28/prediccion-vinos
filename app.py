@@ -73,20 +73,6 @@ if st.sidebar.button("Predecir"):
         st.markdown("<h3 style='color:red;'>Nivel de éxito: BAJO</h3>", unsafe_allow_html=True)
         st.write("Este vino presenta un nivel de éxito bajo.")
 
-# =========================
-# RESULTADOS DEL MODELO
-# =========================
-st.subheader("Resultados del modelo Random Forest")
-
-y_pred = modelo.predict(X_test)
-
-r2 = r2_score(y_test, y_pred)
-mae = mean_absolute_error(y_test, y_pred)
-rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-
-st.write(f"**R²:** {r2:.4f}")
-st.write(f"**MAE:** {mae:.2f}")
-st.write(f"**RMSE:** {rmse:.2f}")
 
 # =========================
 # Clasificación
