@@ -4,99 +4,51 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 
-st.set_page_config(page_title="Predicción de Vinos", page_icon="🍷", layout="centered")
+# Configuración de la página
+st.set_page_config(page_title="Predicción de Vinos")
 
-st.title("🍷 Predicción de Éxito de Vinos Tintos")
-st.write("Ingresa las características químicas del vino para predecir su nivel de éxito.")
+st.title("Predicción de Éxito de Vinos Tintos")
+st.write("Esta aplicación predice el nivel de éxito de un vino tinto según sus características químicas.")
 
-# =========================
-# Cargar datos y entrenar modelo
-# =========================
-@st.cache_data
-def cargar_datos():
-    df = pd.read_csv("vinos_tintos.csv")
-    df = df.drop_duplicates()
-    df = df.dropna()
-    df["country"] = df["country"].replace({"Spagna": "Spain", "Espana": "Spain"})
-    return df
+# Cargar el dataset
+df = pd.read_csv("vinos_tintos.csv")
 
-df = cargar_datos()
+# Limpieza básica
+df = df.drop_duplicates()
+df = df.dropna()
+df["country"] = df["country"].replace({"Spagna": "Spain", "Espana": "Spain"})
 
-@st.cache_resource
-def entrenar_modelo():
-    X = df.drop(columns=["success", "country", "pricing"])
-    y = df["success"]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    modelo = RandomForestRegressor(n_estimators=150, random_state=42)
-    modelo.fit(X_train, y_train)
-    return modelo
+# Separar variables
+X = df.drop(columns=["success", "country", "pricing"])
+y = df["success"]
 
-modelo_rf = entrenar_modelo()
+# Dividir los datos
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# =========================
-# Sidebar - Entradas
-# =========================
-st.sidebar.header("Características del Vino")
+# Entrenar el modelo
+modelo = RandomForestRegressor(n_estimators=100, random_state=42)
+modelo.fit(X_train, y_train)
 
-# Valores por defecto (promedio aproximado)
-fixed_acidity = st.sidebar.slider("Acidez Fija", 4.5, 16.0, 8.3, 0.1)
-volatile_acidity = st.sidebar.slider("Acidez Volátil", 0.10, 1.60, 0.53, 0.01)
-citric_acid = st.sidebar.slider("Ácido Cítrico", 0.0, 1.0, 0.27, 0.01)
-residual_sugar = st.sidebar.slider("Azúcar Residual", 0.9, 15.5, 2.5, 0.1)
-chlorides = st.sidebar.slider("Cloruros", 0.01, 0.60, 0.08, 0.001)
-free_sulfur_dioxide = st.sidebar.slider("Dióxido de Azufre Libre", 1.0, 70.0, 16.0, 1.0)
-total_sulfur_dioxide = st.sidebar.slider("Dióxido de Azufre Total", 6.0, 290.0, 46.0, 1.0)
-density = st.sidebar.slider("Densidad", 0.990, 1.004, 0.997, 0.0001)
-pH = st.sidebar.slider("pH", 2.7, 4.0, 3.3, 0.01)
-sulphates = st.sidebar.slider("Sulfatos", 0.3, 2.0, 0.65, 0.01)
-alcohol = st.sidebar.slider("Alcohol", 0.08, 0.15, 0.10, 0.001)
+# Sidebar con los datos de entrada
+st.sidebar.header("Ingrese las características del vino")
 
-# =========================
-# Botones de ejemplo
-# =========================
-st.sidebar.markdown("---")
-st.sidebar.subheader("Ejemplos rápidos")
+acidez_fija = st.sidebar.number_input("Acidez Fija", value=7.4)
+acidez_volatil = st.sidebar.number_input("Acidez Volátil", value=0.70)
+acido_citrico = st.sidebar.number_input("Ácido Cítrico", value=0.00)
+azucar_residual = st.sidebar.number_input("Azúcar Residual", value=1.9)
+cloruros = st.sidebar.number_input("Cloruros", value=0.076)
+dioxido_libre = st.sidebar.number_input("Dióxido de Azufre Libre", value=11.0)
+dioxido_total = st.sidebar.number_input("Dióxido de Azufre Total", value=34.0)
+densidad = st.sidebar.number_input("Densidad", value=0.9978)
+ph = st.sidebar.number_input("pH", value=3.51)
+sulfatos = st.sidebar.number_input("Sulfatos", value=0.56)
+alcohol = st.sidebar.number_input("Alcohol", value=0.094)
 
-col1, col2 = st.sidebar.columns(2)
-
-with col1:
-    if st.button("Success Alto", use_container_width=True):
-        st.session_state.ejemplo = "alto"
-
-with col2:
-    if st.button("Success Bajo", use_container_width=True):
-        st.session_state.ejemplo = "bajo"
-
-# Aplicar ejemplos
-if "ejemplo" in st.session_state:
-    if st.session_state.ejemplo == "alto":
-        fixed_acidity, volatile_acidity, citric_acid = 11.0, 0.25, 0.50
-        residual_sugar, chlorides = 2.5, 0.06
-        free_sulfur_dioxide, total_sulfur_dioxide = 30.0, 100.0
-        density, pH, sulphates, alcohol = 0.998, 3.2, 0.90, 0.120
-    elif st.session_state.ejemplo == "bajo":
-        fixed_acidity, volatile_acidity, citric_acid = 5.0, 1.30, 0.00
-        residual_sugar, chlorides = 1.5, 0.15
-        free_sulfur_dioxide, total_sulfur_dioxide = 5.0, 20.0
-        density, pH, sulphates, alcohol = 0.995, 3.7, 0.40, 0.085
-
-# =========================
-# Predicción
-# =========================
-if st.sidebar.button("Predecir Éxito", type="primary", use_container_width=True):
-    datos = np.array([[fixed_acidity, volatile_acidity, citric_acid, residual_sugar,
-                       chlorides, free_sulfur_dioxide, total_sulfur_dioxide,
-                       density, pH, sulphates, alcohol]])
+# Botón para predecir
+if st.sidebar.button("Predecir"):
+    datos = np.array([[acidez_fija, acidez_volatil, acido_citrico, azucar_residual,
+                       cloruros, dioxido_libre, dioxido_total, densidad, ph, sulfatos, alcohol]])
     
-    prediccion = modelo_rf.predict(datos)[0]
+    prediccion = modelo.predict(datos)[0]
     
-    st.markdown("---")
-    
-    if prediccion >= 65:
-        st.success(f"### 🍷 Success predicho: **{prediccion:.2f}** (Alto)")
-    elif prediccion >= 50:
-        st.info(f"### 🍷 Success predicho: **{prediccion:.2f}** (Medio)")
-    else:
-        st.error(f"### 🍷 Success predicho: **{prediccion:.2f}** (Bajo)")
-    
-    st.caption("El modelo Random Forest analiza las características químicas para estimar el nivel de éxito del vino.")
+    st.success(f"Success predicho: {prediccion:.2f}")
