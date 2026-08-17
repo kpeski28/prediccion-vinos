@@ -4,7 +4,6 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 
-# Configuración de la página
 st.set_page_config(page_title="Predicción de Vinos")
 
 st.title("Predicción de Éxito de Vinos Tintos")
@@ -29,7 +28,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 modelo = RandomForestRegressor(n_estimators=100, random_state=42)
 modelo.fit(X_train, y_train)
 
-# Sidebar con los datos de entrada
+# Sidebar
 st.sidebar.header("Ingrese las características del vino")
 
 acidez_fija = st.sidebar.number_input("Acidez Fija", value=7.4)
@@ -51,4 +50,13 @@ if st.sidebar.button("Predecir"):
     
     prediccion = modelo.predict(datos)[0]
     
-    st.success(f"Success predicho: {prediccion:.2f}")
+    # Mensajes según el resultado
+    if prediccion >= 65:
+        st.success(f"Success predicho: {prediccion:.2f}")
+        st.write("Este vino tiene un nivel de éxito **alto**.")
+    elif prediccion >= 50:
+        st.info(f"Success predicho: {prediccion:.2f}")
+        st.write("Este vino tiene un nivel de éxito **medio**.")
+    else:
+        st.error(f"Success predicho: {prediccion:.2f}")
+        st.write("Este vino tiene un nivel de éxito **bajo**.")
