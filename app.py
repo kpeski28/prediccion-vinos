@@ -27,12 +27,11 @@ y = df["success"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Entrenar el modelo
-# Se eligió Random Forest porque predijo mejor el éxito de los vinos que la Regresión Lineal
 modelo = RandomForestRegressor(n_estimators=100, random_state=42)
 modelo.fit(X_train, y_train)
 
 # =========================
-# SIDEBAR - Entrada de datos
+# SIDEBAR
 # =========================
 st.sidebar.header("Ingrese las características del vino")
 
@@ -49,7 +48,7 @@ sulfatos = st.sidebar.number_input("Sulfatos", value=0.56)
 alcohol = st.sidebar.number_input("Alcohol", value=0.094)
 
 # =========================
-# PREDICCIÓN
+# PREDICCIÓN CON COLORES
 # =========================
 if st.sidebar.button("Predecir"):
     datos = np.array([[acidez_fija, acidez_volatil, acido_citrico, azucar_residual,
@@ -60,17 +59,19 @@ if st.sidebar.button("Predecir"):
     st.subheader("Resultado de la predicción")
     
     if prediccion >= 65:
-        st.success(f"**Success predicho: {prediccion:.2f}**")
-        st.write("Nivel de éxito: **ALTO**")
-        st.write("Este vino tiene buenas características y un alto potencial de éxito.")
+        st.success(f"Success predicho: **{prediccion:.2f}**")
+        st.markdown("<h3 style='color:green;'>Nivel de éxito: ALTO</h3>", unsafe_allow_html=True)
+        st.write("Este vino tiene un alto potencial de éxito.")
+        
     elif prediccion >= 50:
-        st.info(f"**Success predicho: {prediccion:.2f}**")
-        st.write("Nivel de éxito: **MEDIO**")
+        st.info(f"Success predicho: **{prediccion:.2f}**")
+        st.markdown("<h3 style='color:orange;'>Nivel de éxito: MEDIO</h3>", unsafe_allow_html=True)
         st.write("Este vino tiene un nivel de éxito intermedio.")
+        
     else:
-        st.error(f"**Success predicho: {prediccion:.2f}**")
-        st.write("Nivel de éxito: **BAJO**")
-        st.write("Este vino presenta un nivel de éxito bajo según sus características químicas.")
+        st.error(f"Success predicho: **{prediccion:.2f}**")
+        st.markdown("<h3 style='color:red;'>Nivel de éxito: BAJO</h3>", unsafe_allow_html=True)
+        st.write("Este vino presenta un nivel de éxito bajo.")
 
 # =========================
 # RESULTADOS DEL MODELO
@@ -87,20 +88,18 @@ st.write(f"**R²:** {r2:.4f}")
 st.write(f"**MAE:** {mae:.2f}")
 st.write(f"**RMSE:** {rmse:.2f}")
 
-st.caption("Estas métricas muestran el rendimiento del modelo al predecir el success de los vinos.")
-
 # =========================
-# Clasificación de Success
+# Clasificación
 # =========================
 st.subheader("Clasificación del Success")
-st.write("""
-- **ALTO:** 65 o más  
-- **MEDIO:** entre 50 y 64  
-- **BAJO:** menos de 50  
-""")
+st.markdown("""
+- <span style='color:green; font-weight:bold;'>ALTO:</span> 65 o más  
+- <span style='color:orange; font-weight:bold;'>MEDIO:</span> entre 50 y 64  
+- <span style='color:red; font-weight:bold;'>BAJO:</span> menos de 50  
+""", unsafe_allow_html=True)
 
 # =========================
-# GRÁFICO 1: Importancia de variables
+# GRÁFICO 1
 # =========================
 st.subheader("Importancia de las variables")
 
@@ -114,7 +113,7 @@ ax1.set_title("Influencia de cada variable en el Success")
 st.pyplot(fig1)
 
 # =========================
-# GRÁFICO 2: Real vs Predicho
+# GRÁFICO 2
 # =========================
 st.subheader("Valores reales vs predichos")
 
