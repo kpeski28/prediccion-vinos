@@ -73,6 +73,13 @@ if st.sidebar.button("Predecir"):
         st.markdown("<h3 style='color:red;'>Nivel de éxito: BAJO</h3>", unsafe_allow_html=True)
         st.write("Este vino presenta un nivel de éxito bajo.")
 
+# =========================
+# RESULTADOS DEL MODELO
+# =========================
+y_pred = modelo.predict(X_test)
+r2 = r2_score(y_test, y_pred)
+mae = mean_absolute_error(y_test, y_pred)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 
 # =========================
 # Clasificación
@@ -83,6 +90,7 @@ st.markdown("""
 - <span style='color:orange; font-weight:bold;'>MEDIO:</span> entre 50 y 64  
 - <span style='color:red; font-weight:bold;'>BAJO:</span> menos de 50  
 """, unsafe_allow_html=True)
+
 
 # =========================
 # GRÁFICO 2
